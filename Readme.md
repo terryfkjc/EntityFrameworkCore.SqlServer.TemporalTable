@@ -67,8 +67,8 @@ modelBuilder.Entity<User>(b =>
       b.ToTable("Users");
       b.HasTemporalTable(config =>
       {
-            config.HistorySchema = "history";
-            config.HistoryTable = "UserHistories";
+            config.HistorySchema("history");
+            config.HistoryTable("UserHistories");
       });
 });
 ```

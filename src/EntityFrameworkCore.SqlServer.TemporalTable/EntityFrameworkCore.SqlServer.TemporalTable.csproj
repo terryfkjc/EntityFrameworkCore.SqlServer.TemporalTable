@@ -11,6 +11,7 @@
     <RootNamespace>EntityFrameworkCore.SqlServer.TemporalTable</RootNamespace>
     <RepositoryUrl>https://github.com/terryfkjc/EntityFrameworkCore.SqlServer.TemporalTable</RepositoryUrl>
     <Description>Support Sql Server Temporal migrations and query in EntityFrameworkCore 5</Description>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
