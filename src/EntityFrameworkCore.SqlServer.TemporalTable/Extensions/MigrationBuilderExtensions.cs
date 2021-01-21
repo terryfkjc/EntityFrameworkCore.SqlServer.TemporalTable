@@ -9,7 +9,8 @@ namespace Microsoft.EntityFrameworkCore.Migrations
             this MigrationBuilder migrationBuilder,
             string table, string schema = null,
             string historyTable = null, string historySchema = null,
-            string startColumn = null, string endColumn = null)
+            string startColumn = null, string endColumn = null,
+            bool dataConsistencyCheck = false)
         {
             startColumn = startColumn ?? TemporalAnnotationNames.DefaultStartTime;
             endColumn = endColumn ?? TemporalAnnotationNames.DefaultStartTime;
@@ -22,7 +23,8 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                 HistorySchema = historySchema,
                 HistoryTable = historyTable,
                 SysStartDate = startColumn,
-                SysEndDate = endColumn
+                SysEndDate = endColumn,
+                DataConsistencyCheck = dataConsistencyCheck
             };
 
             migrationBuilder.Operations.Add(operation);

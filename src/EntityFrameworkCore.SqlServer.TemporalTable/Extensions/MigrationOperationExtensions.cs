@@ -38,5 +38,16 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Operations
             var temporalAnnotation = tableOperation.FindAnnotation(TemporalAnnotationNames.SysEndDate);
             return temporalAnnotation?.Value as string ?? TemporalAnnotationNames.DefaultEndTime;
         }
+
+        public static bool DataConsistencyCheck(this TableOperation tableOperation)
+        {
+            var temporalAnnotation = tableOperation.FindAnnotation(TemporalAnnotationNames.DataConsistencyCheck);
+            if (temporalAnnotation != null)
+            {
+                return temporalAnnotation.Value as bool? ?? false;
+            }
+
+            return false;
+        }
     }
 }

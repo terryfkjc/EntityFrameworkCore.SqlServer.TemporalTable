@@ -207,6 +207,7 @@ namespace Temporal.MigrationTest
                     {
                         config.StartDateColumn("ValidFrom");
                         config.EndDateColumn("NewValidTo");
+                        config.DataConsistencyCheck(true);
                     });
                 });
             }

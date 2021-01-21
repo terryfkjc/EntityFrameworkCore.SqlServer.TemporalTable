@@ -59,7 +59,8 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Migrations
                             HistoryTable = _Entity.GetHistoryTableName(),
                             HistorySchema = _Entity.GetHistoryTableSchema(),
                             SysStartDate = _Entity.GetStartDateColumnName(),
-                            SysEndDate = _Entity.GetEndDateColumnName()
+                            SysEndDate = _Entity.GetEndDateColumnName(),
+                            DataConsistencyCheck = _Entity.DataConsistencyCheck()
                         };
 
                         _Operations.Add(enableTemporalTableOperation);
@@ -69,8 +70,6 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Migrations
 
             return _Operations;
         }
-
-         
 
         protected override IEnumerable<MigrationOperation> Diff(ITable source, ITable target, DiffContext diffContext)
         {
@@ -92,7 +91,8 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Migrations
                     HistoryTable = _TargetEntity.GetHistoryTableName(),
                     HistorySchema = _TargetEntity.GetHistoryTableSchema(),
                     SysStartDate = _TargetEntity.GetStartDateColumnName(),
-                    SysEndDate = _TargetEntity.GetEndDateColumnName()
+                    SysEndDate = _TargetEntity.GetEndDateColumnName(),
+                    DataConsistencyCheck = _TargetEntity.DataConsistencyCheck()
                 };
 
                 if (enableTemporal.HistorySchema != null)
@@ -129,6 +129,21 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Migrations
                 //}
 
                 _Operations.Add(disableTemporal);
+            }
+            else if (_SourceIsTemporal == true && _TargetIsTemporal == true)
+            {
+                EnableTemporalTableOperation enableTemporal = new EnableTemporalTableOperation()
+                {
+                    Name = _TargetEntity.GetTableName(),
+                    Schema = _TargetEntity.GetSchema(),
+                    HistoryTable = _TargetEntity.GetHistoryTableName(),
+                    HistorySchema = _TargetEntity.GetHistoryTableSchema(),
+                    SysStartDate = _TargetEntity.GetStartDateColumnName(),
+                    SysEndDate = _TargetEntity.GetEndDateColumnName(),
+                    DataConsistencyCheck = _TargetEntity.DataConsistencyCheck()
+                };
+
+                _Operations.Add(enableTemporal);
             }
 
             return _Operations;

@@ -47,7 +47,7 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Metadata
         }
 
 
-        public bool DataConsistencyCheck { get; set; }
+        //public bool DataConsistencyCheck { get; set; }
         protected EntityTypeBuilder EntityTypeBuilder { get; }
 
         public void HasInfiniteRetentionPeriod()
@@ -70,6 +70,18 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Metadata
 
             _Retention = number;
             _RetentionPeriod = retentionPeriod;
+        }
+
+        public void DataConsistencyCheck(bool check)
+        {
+            if (check)
+            {
+                this.EntityTypeBuilder.Metadata.SetAnnotation(TemporalAnnotationNames.DataConsistencyCheck, true);
+            }
+            else
+            {
+                this.EntityTypeBuilder.Metadata.RemoveAnnotation(TemporalAnnotationNames.DataConsistencyCheck);
+            }
         }
     }
 }

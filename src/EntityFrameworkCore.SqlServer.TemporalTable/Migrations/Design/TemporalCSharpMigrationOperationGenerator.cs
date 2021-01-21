@@ -124,6 +124,14 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Migrations.Design
                         .Append("endColumn: ")
                         .Append(Code.Literal(operation.SysEndDate));
                 }
+
+                if (operation.DataConsistencyCheck)
+                {
+                    builder
+                        .AppendLine(",")
+                        .Append("dataConsistencyCheck: ")
+                        .Append(Code.Literal(operation.DataConsistencyCheck));
+                }
             }
 
             builder.Append(")");
@@ -148,7 +156,8 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Migrations.Design
                     HistoryTable = operation.GetHistoryTableName(),
                     HistorySchema = operation.GetHistoryTableSchema(),
                     SysStartDate = operation.GetSysStartColumnName(),
-                    SysEndDate = operation.GetSysEndColumnName()
+                    SysEndDate = operation.GetSysEndColumnName(),
+                    DataConsistencyCheck = operation.DataConsistencyCheck()
                 };
 
                 this.Generate(enableTemporalTableOperation, builder);

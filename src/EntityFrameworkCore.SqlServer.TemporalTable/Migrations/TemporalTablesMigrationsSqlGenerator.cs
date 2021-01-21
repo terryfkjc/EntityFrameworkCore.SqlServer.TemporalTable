@@ -111,13 +111,32 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Migrations
 
 
             builder
-                .Append("ALTER TABLE ")
-                .Append(_SchemaQualifiedTableName)
-                .Append(" SET (SYSTEM_VERSIONING = ON ")
-                .Append("(HISTORY_TABLE=")
-                .Append(Dependencies.SqlGenerationHelper.DelimitIdentifier(operation.HistoryTable, operation.HistorySchema ?? TemporalAnnotationNames.DefaultSchema))
-                .AppendLine("))")
-                .EndCommand();
+                .AppendLine($"ALTER TABLE {_SchemaQualifiedTableName} SET(");
+
+
+            using (builder.Indent())
+            {
+                builder.AppendLine("SYSTEM_VERSIONING = ON (");
+
+                using (builder.Indent())
+                {
+                    builder
+                        .Append($"HISTORY_TABLE = ")
+                        .Append(Dependencies.SqlGenerationHelper.DelimitIdentifier(operation.HistoryTable, operation.HistorySchema ?? TemporalAnnotationNames.DefaultSchema));
+
+                    if (operation.DataConsistencyCheck)
+                    {
+                        builder
+                            .AppendLine(",")
+                            .AppendLine("DATA_CONSISTENCY_CHECK = ON");
+                    }
+
+                }
+                builder.AppendLine(")");
+
+            }
+
+            builder.AppendLine(")").EndCommand();
 
         }
 

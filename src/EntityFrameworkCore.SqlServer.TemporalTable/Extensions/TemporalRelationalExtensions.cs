@@ -12,6 +12,11 @@ namespace Microsoft.EntityFrameworkCore
             return entityType[TemporalAnnotationNames.IsTemporal] as bool? ?? false;
         }
 
+        public static bool DataConsistencyCheck(this IEntityType entityType)
+        {
+            return entityType[TemporalAnnotationNames.DataConsistencyCheck] as bool? ?? false;
+        }
+
         public static string GetHistoryTableName(this IEntityType entityType)
         {
             return entityType[TemporalAnnotationNames.HistoryTable] as string ?? entityType.GetTableName() + "Histories";
