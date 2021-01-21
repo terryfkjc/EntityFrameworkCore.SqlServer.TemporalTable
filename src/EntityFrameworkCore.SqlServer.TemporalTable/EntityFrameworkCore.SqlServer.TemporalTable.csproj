@@ -12,6 +12,9 @@
     <RepositoryUrl>https://github.com/terryfkjc/EntityFrameworkCore.SqlServer.TemporalTable</RepositoryUrl>
     <Description>Support Sql Server Temporal migrations and query in EntityFrameworkCore 5</Description>
     <Version>1.1.0</Version>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/terryfkjc/EntityFrameworkCore.SqlServer.TemporalTable</PackageProjectUrl>
+    <PackageReleaseNotes>- Added support for data consistency check.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +25,13 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
