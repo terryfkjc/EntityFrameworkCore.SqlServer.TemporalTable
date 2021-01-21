@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5AFFEAB0-E1AB-45ED-A0FF-0AA38A771D0B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2451EAE6-1DB0-45A9-B07A-E55199D93A6A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Temporal.MigrationTest", "test\Temporal.MigrationTest\Temporal.MigrationTest.csproj", "{70D4AD14-4D0F-46F6-BC2A-D68B12D72AA4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "demo", "demo", "{96540316-9ADF-443B-A439-8992527FAAE6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleMvcApplication", "demo\SampleMvcApplication\SampleMvcApplication.csproj", "{CF5F1890-A1FD-4E31-83CA-9350448A23F1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkCore.SqlServer.TemporalTable", "src\EntityFrameworkCore.SqlServer.TemporalTable\EntityFrameworkCore.SqlServer.TemporalTable.csproj", "{70691F56-EF3B-4AB6-9535-45DEA942CD42}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70D4AD14-4D0F-46F6-BC2A-D68B12D72AA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70D4AD14-4D0F-46F6-BC2A-D68B12D72AA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70D4AD14-4D0F-46F6-BC2A-D68B12D72AA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70D4AD14-4D0F-46F6-BC2A-D68B12D72AA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF5F1890-A1FD-4E31-83CA-9350448A23F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF5F1890-A1FD-4E31-83CA-9350448A23F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF5F1890-A1FD-4E31-83CA-9350448A23F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF5F1890-A1FD-4E31-83CA-9350448A23F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70691F56-EF3B-4AB6-9535-45DEA942CD42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70691F56-EF3B-4AB6-9535-45DEA942CD42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70691F56-EF3B-4AB6-9535-45DEA942CD42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70691F56-EF3B-4AB6-9535-45DEA942CD42}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{70D4AD14-4D0F-46F6-BC2A-D68B12D72AA4} = {2451EAE6-1DB0-45A9-B07A-E55199D93A6A}
+		{CF5F1890-A1FD-4E31-83CA-9350448A23F1} = {96540316-9ADF-443B-A439-8992527FAAE6}
+		{70691F56-EF3B-4AB6-9535-45DEA942CD42} = {5AFFEAB0-E1AB-45ED-A0FF-0AA38A771D0B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DC3F91BE-504D-44EA-A479-76F07F3BED46}
+	EndGlobalSection
+EndGlobal
