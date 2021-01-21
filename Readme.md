@@ -53,8 +53,8 @@ modelBuilder.Entity<TransactionRecord>(b =>
 {
           b.HasTemporalTable(config =>
           {
-                    config.StartDateColumn = nameof(TransactionRecord.CreatedDate);
-                    config.EndDateColumn = nameof(TransactionRecord.LastModifiedDate);
+              config.StartDateColumn("ValidFrom");
+              config.EndDateColumn("NewValidTo");
           });
 });
 ```
