@@ -9,6 +9,7 @@
     <Product>EntityFrameworkCore.SqlServer.TemporalTable</Product>
     <AssemblyName>EntityFrameworkCore.SqlServer.TemporalTable</AssemblyName>
     <RootNamespace>EntityFrameworkCore.SqlServer.TemporalTable</RootNamespace>
+    <RepositoryUrl>https://github.com/terryfkjc/EntityFrameworkCore.SqlServer.TemporalTable</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
