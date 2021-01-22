@@ -20,7 +20,6 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Metadata
 
         private int _Retention;
         private RetentionPeriod _RetentionPeriod;
-        //private readonly EntityTypeBuilder entityTypeBuilder;
 
         public virtual TemporalConfiguration HistoryTable(string table)
         {
@@ -36,18 +35,24 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Metadata
 
         public virtual TemporalConfiguration StartDateColumn(string column)
         {
-            this.EntityTypeBuilder.Property<DateTime>(TemporalAnnotationNames.DefaultStartTime).SetStartDateColumn(column);
+            this.EntityTypeBuilder
+                .Property<DateTime>(TemporalAnnotationNames.DefaultStartTime)
+                .SetStartDateColumn(column)
+                .ValueGeneratedOnAddOrUpdate();
+
             return this;
         }
 
         public virtual TemporalConfiguration EndDateColumn(string column)
         {
-            this.EntityTypeBuilder.Property<DateTime>(TemporalAnnotationNames.DefaultEndTime).SetEndDateColumn(column);
+            this.EntityTypeBuilder
+                .Property<DateTime>(TemporalAnnotationNames.DefaultEndTime)
+                .SetEndDateColumn(column)
+                .ValueGeneratedOnAddOrUpdate();
+
             return this;
         }
 
-
-        //public bool DataConsistencyCheck { get; set; }
         protected EntityTypeBuilder EntityTypeBuilder { get; }
 
         public void HasInfiniteRetentionPeriod()

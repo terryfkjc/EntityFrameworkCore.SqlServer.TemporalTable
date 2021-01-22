@@ -174,6 +174,34 @@ namespace Temporal.MigrationTest
             }
         }
 
+        [TestMethod]
+        public async Task Temporal_Insert_Test()
+        {
+            var factory = new TemporalTestDesignTimeDbContextFactory();
+
+            using (TemporalTestDbContext context = factory.CreateDbContext(null))
+            {
+                await context.Database.EnsureDeletedAsync();
+                var migrations = await context.Database.GetPendingMigrationsAsync();
+
+                Assert.IsTrue(migrations.Any(), "At least one migration is needed.");
+                await context.Database.MigrateAsync();
+            }
+
+            using (TemporalTestDbContext context = factory.CreateDbContext(null))
+            {
+                var transaction = new TransactionRecord()
+                {
+                    Amount = 10,
+                    CreatedDate = DateTime.Now,
+                    LastModifiedDate = DateTime.Now
+                };
+
+                context.Add(transaction);
+                await context.SaveChangesAsync();
+            }
+        }
+
         public class TemporalTestDbContext : DbContext
         {
             public TemporalTestDbContext(DbContextOptions<TemporalTestDbContext> dbContextOptions)
