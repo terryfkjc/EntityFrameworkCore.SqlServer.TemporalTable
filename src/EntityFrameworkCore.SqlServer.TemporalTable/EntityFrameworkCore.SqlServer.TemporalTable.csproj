@@ -14,7 +14,7 @@
     <Version>1.1.0</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/terryfkjc/EntityFrameworkCore.SqlServer.TemporalTable</PackageProjectUrl>
-    <PackageReleaseNotes>- Added support for data consistency check.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Fix SqlException when inserting data into temporal table.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
