@@ -9,7 +9,7 @@ class EnhancedDesignTimeServices : IDesignTimeServices
 {
     public void ConfigureDesignTimeServices(IServiceCollection services)
     {
-        services.AddSingleton<ICSharpMigrationOperationGenerator, EnhancedCSharpMigrationOperationGenerator>();
+        services.AddSingleton<ICSharpMigrationOperationGenerator, TemporalCSharpMigrationOperationGenerator>();
     }
 }
 ```
