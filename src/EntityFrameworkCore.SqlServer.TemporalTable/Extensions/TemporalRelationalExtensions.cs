@@ -115,7 +115,7 @@ namespace Microsoft.EntityFrameworkCore
 
         public static IMutableEntityType SetHistoryTableSchema(this IMutableEntityType mutableEntityType, string schema)
         {
-            mutableEntityType.SetAnnotation(TemporalAnnotationNames.DefaultSchema, schema);
+            mutableEntityType.SetAnnotation(TemporalAnnotationNames.HistorySchema, schema);
             return mutableEntityType;
         }
         #endregion
