@@ -4,6 +4,7 @@ using Temporal.MigrationTest.Models;
 using System.Linq;
 using System.Threading.Tasks;
 using System;
+using EntityFrameworkCore.SqlServer.TemporalTable.Metadata;
 
 namespace Temporal.MigrationTest
 {
@@ -144,12 +145,25 @@ namespace Temporal.MigrationTest
 
                 var projection = query1.Select(t => new
                 {
-                    ValidFrom = EF.Property<DateTime>(t, "ValidFrom"),
-                    ValidTo = EF.Property<DateTime>(t, "ValidTo")
+                    ValidFrom = EF.Property<DateTime>(t, TemporalAnnotationNames.DefaultStartTime),
+                    ValidTo = EF.Property<DateTime>(t, TemporalAnnotationNames.DefaultEndTime)
                 });
 
                 var transactions1 = await projection.ToArrayAsync();
+                
                 var sql1 = projection.ToQueryString();
+
+                var transactions = context.Set<TransactionRecord>()
+                                    .FromTo(_InititalDate, _IncrementedDate)
+                                    .Select(t => new
+                                    {
+                                        Amount = t.Amount,
+                                        CreatedDate = t.CreatedDate,
+                                        SysStartDate = EF.Property<DateTime>(t, TemporalAnnotationNames.DefaultStartTime),
+                                        SysEndDate = EF.Property<DateTime>(t, TemporalAnnotationNames.DefaultEndTime)
+                                    });
+
+                var sql2 = transactions.ToQueryString();
 
                 Assert.IsTrue(sql1.Contains("FOR SYSTEM_TIME FROM"));
                 Assert.AreEqual(8, transactions1.Length, "Expected transaction count is 8");
