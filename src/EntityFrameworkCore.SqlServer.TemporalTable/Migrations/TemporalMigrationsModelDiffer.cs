@@ -130,21 +130,6 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Migrations
 
                 _Operations.Add(disableTemporal);
             }
-            else if (_SourceIsTemporal == true && _TargetIsTemporal == true)
-            {
-                EnableTemporalTableOperation enableTemporal = new EnableTemporalTableOperation()
-                {
-                    Name = _TargetEntity.GetTableName(),
-                    Schema = _TargetEntity.GetSchema(),
-                    HistoryTable = _TargetEntity.GetHistoryTableName(),
-                    HistorySchema = _TargetEntity.GetHistoryTableSchema(),
-                    SysStartDate = _TargetEntity.GetStartDateColumnName(),
-                    SysEndDate = _TargetEntity.GetEndDateColumnName(),
-                    DataConsistencyCheck = _TargetEntity.DataConsistencyCheck()
-                };
-
-                _Operations.Add(enableTemporal);
-            }
 
             return _Operations;
         }
