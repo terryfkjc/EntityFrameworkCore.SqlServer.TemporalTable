@@ -14,6 +14,15 @@ class EnhancedDesignTimeServices : IDesignTimeServices
 }
 ```
 
+Note: Please comment the following section in your csproj file in order to make the `IDesignTimeServices` visible in your code.
+
+```xml
+<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0">
+      <!--<PrivateAssets>all</PrivateAssets>-->
+      <!--<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>-->
+</PackageReference>
+```
+
 2. Use the following method to configure DbContext. UseInternalServiceProvider need to be called to let DbContext resolve depencdencies with the provider we have configure.
 
 ```c#
