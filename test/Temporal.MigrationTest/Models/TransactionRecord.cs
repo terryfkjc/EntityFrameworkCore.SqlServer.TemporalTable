@@ -13,4 +13,15 @@ namespace Temporal.MigrationTest.Models
 
         //public User Sender { get; set; }
     }
+
+    class CashTransfer : TransactionRecord
+    {
+        public string Sender { get; set; }
+        public string Receiver { get; set; }
+    }
+
+    class CreditCardTransaction : TransactionRecord
+    {
+        public string CardNumber { get; set; }
+    }
 }

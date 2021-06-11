@@ -13,7 +13,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations
             bool dataConsistencyCheck = false)
         {
             startColumn = startColumn ?? TemporalAnnotationNames.DefaultStartTime;
-            endColumn = endColumn ?? TemporalAnnotationNames.DefaultStartTime;
+            endColumn = endColumn ?? TemporalAnnotationNames.DefaultEndTime;
 
             EnableTemporalTableOperation operation = new EnableTemporalTableOperation()
             {

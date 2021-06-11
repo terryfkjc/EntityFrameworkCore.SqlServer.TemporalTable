@@ -9,7 +9,7 @@ using EntityFrameworkCore.SqlServer.TemporalTable.Metadata;
 namespace Temporal.MigrationTest
 {
     [TestClass]
-    public class MigrationTest
+    public partial class MigrationTest
     {
         public TestContext TestContext { get; set; }
 
@@ -213,45 +213,6 @@ namespace Temporal.MigrationTest
 
                 context.Add(transaction);
                 await context.SaveChangesAsync();
-            }
-        }
-
-        public class TemporalTestDbContext : DbContext
-        {
-            public TemporalTestDbContext(DbContextOptions<TemporalTestDbContext> dbContextOptions)
-                : base(dbContextOptions)
-            {
-
-            }
-
-            public DbSet<User> Users { get; set; }
-
-            protected override void OnModelCreating(ModelBuilder modelBuilder)
-            {
-                base.OnModelCreating(modelBuilder);
-
-                modelBuilder.Entity<User>(b =>
-                {
-                    b.ToTable("Users");
-                    //b.HasTemporalTable();
-
-                    //b.HasTemporalTable(config =>
-                    //{
-                    //    config.StartDateColumn("DateFrom");
-                    //});
-                });
-
-                //modelBuilder.Entity<TransactionRecord>(b =>
-                //{
-                //    //b.HasTemporalTable();
-
-                //    b.HasTemporalTable(config =>
-                //    {
-                //        config.StartDateColumn("ValidFrom");
-                //        config.EndDateColumn("NewValidTo");
-                //        config.DataConsistencyCheck(true);
-                //    });
-                //});
             }
         }
     }
