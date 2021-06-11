@@ -241,17 +241,17 @@ namespace Temporal.MigrationTest
                     //});
                 });
 
-                modelBuilder.Entity<TransactionRecord>(b =>
-                {
-                    //b.HasTemporalTable();
+                //modelBuilder.Entity<TransactionRecord>(b =>
+                //{
+                //    //b.HasTemporalTable();
 
-                    b.HasTemporalTable(config =>
-                    {
-                        config.StartDateColumn("ValidFrom");
-                        config.EndDateColumn("NewValidTo");
-                        config.DataConsistencyCheck(true);
-                    });
-                });
+                //    b.HasTemporalTable(config =>
+                //    {
+                //        config.StartDateColumn("ValidFrom");
+                //        config.EndDateColumn("NewValidTo");
+                //        config.DataConsistencyCheck(true);
+                //    });
+                //});
             }
         }
     }

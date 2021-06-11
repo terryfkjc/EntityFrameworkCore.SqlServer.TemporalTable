@@ -1,4 +1,5 @@
-﻿using EntityFrameworkCore.SqlServer.TemporalTable.Migrations.Operations;
+﻿using EntityFrameworkCore.SqlServer.TemporalTable.Metadata;
+using EntityFrameworkCore.SqlServer.TemporalTable.Migrations.Operations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -26,6 +27,49 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Migrations
             : base(typeMappingSource, migrationsAnnotations, changeDetector, updateAdapterFactory, commandBatchPreparerDependencies)
         {
             
+        }
+
+
+        protected override IEnumerable<MigrationOperation> Remove(ITable source, DiffContext diffContext)
+        {
+            List<MigrationOperation> _Operations = new List<MigrationOperation>();
+            var _Entity = source.Model.Model.FindEntity(source.Name, source.Schema);
+            var _IsTemporal = _Entity.HasTemporalTable();
+            
+            if (_IsTemporal)
+            {
+                _Operations.Add(new DisableTemporalTableOperation()
+                {
+                    Name = _Entity.GetTableName(),
+                    Schema = _Entity.GetSchema()
+                });
+
+                var _HistoryTable = _Entity.GetHistoryTableName();
+                var _HistoryTableSchema = _Entity.GetHistoryTableSchema();
+
+                _Operations.Add(new DropHistoryTableOperation()
+                {
+                    Name = _HistoryTable,
+                    Schema = _HistoryTableSchema
+                });
+
+                //Note:
+                //  The history table is not tracked by EntityFramework, so do not
+                //  use DropTableOperation else later will get NullReferenceException from 
+                //
+                // Microsoft.EntityFrameworkCore.Migrations.Internal.MigrationsModelDiffer.Sort(IEnumerable`1 operations, DiffContext diffContext)
+
+
+                //_Operations.Add(new DropTableOperation()
+                //{
+                //    Name = _HistoryTable,
+                //    Schema = _HistoryTableSchema ?? TemporalAnnotationNames.DefaultSchema, 
+                //    IsDestructiveChange = true
+                //});
+            }
+
+            _Operations.AddRange(base.Remove(source, diffContext).ToArray());
+            return _Operations;
         }
 
         protected override IEnumerable<MigrationOperation> Add(ITable target, DiffContext diffContext)

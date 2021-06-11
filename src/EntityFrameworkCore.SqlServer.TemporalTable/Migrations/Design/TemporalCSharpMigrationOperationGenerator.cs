@@ -137,6 +137,17 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Migrations.Design
             builder.Append(")");
         }
 
+        protected virtual void Generate(DropHistoryTableOperation operation, IndentedStringBuilder builder)
+        {
+            DropTableOperation dropTableOperation = new DropTableOperation()
+            {
+                Schema = operation.Schema,
+                Name = operation.Name
+            };
+
+            base.Generate(dropTableOperation, builder);
+        }
+
         protected override void Generate(CreateTableOperation operation, IndentedStringBuilder builder)
         {
             base.Generate(operation, builder);
