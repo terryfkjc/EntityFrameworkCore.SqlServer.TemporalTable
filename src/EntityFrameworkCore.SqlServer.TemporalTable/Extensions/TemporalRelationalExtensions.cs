@@ -137,14 +137,21 @@ namespace Microsoft.EntityFrameworkCore
         #region IModel
         public static IEntityType FindEntity(this IModel model, string table, string schema)
         {
-            foreach (var entity in model.GetEntityTypes())
-            {
-                var tableName = entity.GetTableName();
-                var schemaName = entity.GetSchema();
+            //In EF Core 5, one table may shared by multiple entity (aka IEntityType).
+            //In order to find out the main entity (principle entity), we need to loop
+            //all the entity mappings from the table model.
 
-                if (table == tableName && ((schema == null && schemaName == null) || schema == schemaName))
+            var tableModel = model.GetRelationalModel()?.FindTable(table, schema);
+
+            if (tableModel != null)
+            {
+                foreach (var mapping in tableModel.EntityTypeMappings)
                 {
-                    return entity;
+                    if (mapping.IsSharedTablePrincipal)
+                    {
+                        //This mapping is for the parent entity
+                        return mapping.EntityType;
+                    }
                 }
             }
 
