@@ -1,4 +1,13 @@
 
+# Installation
+
+```sh
+dotnet add package EntityFrameworkCore.SqlServer.TemporalTable
+```
+```ps
+Install-Package EntityFrameworkCore.SqlServer.TemporalTable
+```
+
 # Setup
 
 
