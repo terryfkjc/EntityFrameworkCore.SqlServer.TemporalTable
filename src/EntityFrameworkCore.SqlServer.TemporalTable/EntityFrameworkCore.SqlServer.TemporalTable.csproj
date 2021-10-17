@@ -4,21 +4,27 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Authors>terryfkjc</Authors>
     <Company></Company>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <!--<GeneratePackageOnBuild>true</GeneratePackageOnBuild>-->
     <PackageId>EntityFrameworkCore.SqlServer.TemporalTable</PackageId>
     <Product>EntityFrameworkCore.SqlServer.TemporalTable</Product>
     <AssemblyName>EntityFrameworkCore.SqlServer.TemporalTable</AssemblyName>
     <RootNamespace>EntityFrameworkCore.SqlServer.TemporalTable</RootNamespace>
-    <RepositoryUrl>https://github.com/terryfkjc/EntityFrameworkCore.SqlServer.TemporalTable</RepositoryUrl>
+    <!--<RepositoryUrl>https://github.com/terryfkjc/EntityFrameworkCore.SqlServer.TemporalTable</RepositoryUrl>-->
     <Description>Support Sql Server Temporal migrations and query in EntityFrameworkCore 5</Description>
     <Version>1.2.4</Version>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/terryfkjc/EntityFrameworkCore.SqlServer.TemporalTable</PackageProjectUrl>
     <PackageReleaseNotes>- fix wrong default end date column name being used when generating migration script.
 - added test scenario to demonstrate entity inheritance with TPT (table per type) is able to use temporal table for each type.</PackageReleaseNotes>
+	  <PublishRepositoryUrl>true</PublishRepositoryUrl>
+	  <DebugType>portable</DebugType>
+	  <EmbedUntrackedSources>true</EmbedUntrackedSources>
+	  <IncludeSymbols>true</IncludeSymbols>
+	  <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0">
       <!--<PrivateAssets>all</PrivateAssets>-->
