@@ -14,10 +14,8 @@ using System.Linq;
 
 namespace EntityFrameworkCore.SqlServer.TemporalTable.Migrations
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "EF1001:Internal EF Core API usage.", Justification = "<Pending>")]
     public class TemporalMigrationsModelDiffer : MigrationsModelDiffer
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "EF1001:Internal EF Core API usage.", Justification = "<Pending>")]
         public TemporalMigrationsModelDiffer(
             IRelationalTypeMappingSource typeMappingSource,
             IMigrationsAnnotationProvider migrationsAnnotations,

@@ -7,10 +7,8 @@ using System.Text;
 
 namespace EntityFrameworkCore.SqlServer.TemporalTable.Query
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "EF1001:Internal EF Core API usage.", Justification = "<Pending>")]
     internal class TemporalParameterBasedSqlProcessor : SqlServerParameterBasedSqlProcessor
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "EF1001:Internal EF Core API usage.", Justification = "<Pending>")]
         public TemporalParameterBasedSqlProcessor(
             RelationalParameterBasedSqlProcessorDependencies dependencies, bool useRelationalNulls)
             : base(dependencies, useRelationalNulls)

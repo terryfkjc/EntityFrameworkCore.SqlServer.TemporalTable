@@ -6,12 +6,22 @@ using System.Linq.Expressions;
 using System.Text;
 using EntityFrameworkCore.SqlServer.TemporalTable.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
+using System.Linq;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace EntityFrameworkCore.SqlServer.TemporalTable.Query
 {
     internal class TemporalRelationalQueryableMethodTranslatingExpressionVisitor
         : RelationalQueryableMethodTranslatingExpressionVisitor
     {
+        protected TemporalRelationalQueryableMethodTranslatingExpressionVisitor(
+            TemporalRelationalQueryableMethodTranslatingExpressionVisitor parentVisitor)
+            : base(parentVisitor)
+        {
+
+        }
+
         public TemporalRelationalQueryableMethodTranslatingExpressionVisitor(
             QueryableMethodTranslatingExpressionVisitorDependencies dependencies,
             RelationalQueryableMethodTranslatingExpressionVisitorDependencies relationalDependencies,
@@ -21,78 +31,63 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Query
 
         }
 
-        private Expression HandleTemporalTableDateRange(MethodCallExpression methodCallExpression,
-            Action<TemporalTableExpression, ParameterExpression, ParameterExpression> setter)
+        protected override Expression VisitExtension(Expression extensionExpression)
         {
-            var _StartDateParameter = Visit(methodCallExpression.Arguments[1]) as ParameterExpression;
-            var _EndDateParameter = Visit(methodCallExpression.Arguments[2]) as ParameterExpression;
-
-            var visitMethodCall = Visit(methodCallExpression.Arguments[0]);
-            if (visitMethodCall is ShapedQueryExpression shapedExpression)
+            if (extensionExpression is TemporalQueryRootExpression _RootExpression)
             {
-                var temporalTable = shapedExpression.FindTemporalTable();
-                setter(temporalTable, _StartDateParameter, _EndDateParameter);
-            }
-
-            return visitMethodCall;
-        }
-
-        protected override Expression VisitMethodCall(MethodCallExpression methodCallExpression)
-        {
-            if (methodCallExpression.Method.DeclaringType == typeof(DbSetExtensions))
-            {
-                switch (methodCallExpression.Method.Name)
+                var entityType = _RootExpression.EntityType;
+                if (entityType.HasTemporalTable())
                 {
-                    case nameof(DbSetExtensions.AsOf):
-                        {
-                            var _asOfDateParameter = Visit(methodCallExpression.Arguments[1]) as ParameterExpression;
-                            var visitMethodCall = Visit(methodCallExpression.Arguments[0]);
+                    TemporalTableExpression temporalTable =
+                        new TemporalTableExpression(
+                            _RootExpression.EntityType.GetTableName(),
+                            _RootExpression.EntityType.GetSchema(),
+                            _RootExpression.EntityType.GetTableName().Substring(0, 1));
 
-                            if (visitMethodCall is ShapedQueryExpression shapedExpression)
-                            {
-                                var temporalTable = shapedExpression.FindTemporalTable();
-                                temporalTable.SetAsOfDate(_asOfDateParameter);
-                            }
+                    switch (_RootExpression.TemporalQueryType)
+                    {
+                        case TemporalQueryType.None:
+                            break;
+                        case TemporalQueryType.AsOf:
+                            temporalTable.SetAsOfDate(_RootExpression.AsOfDate);
+                            break;
+                        case TemporalQueryType.FromTo:
+                            temporalTable.SetFromToDate(_RootExpression.StartDate, _RootExpression.EndDate);
+                            break;
+                        case TemporalQueryType.BetweenAnd:
+                            temporalTable.SetBetweenAndDate(_RootExpression.StartDate, _RootExpression.EndDate);
+                            break;
+                        case TemporalQueryType.ContainedIn:
+                            temporalTable.SetContainedInDate(_RootExpression.StartDate, _RootExpression.EndDate);
+                            break;
+                        case TemporalQueryType.All:
+                            temporalTable.SetQueryTypeToAll();
+                            break;
+                        default:
+                            break;
+                    }
 
-                            return visitMethodCall;
-                        }
-                    case nameof(DbSetExtensions.BetweenAnd):
-                        {
-                            var visitMethodCall = 
-                                HandleTemporalTableDateRange(methodCallExpression, (t, s, e) => t.SetBetweenAndDate(s, e));
+                    SelectExpression selectExpression = base.RelationalDependencies.SqlExpressionFactory
+                        .Select(_RootExpression.EntityType, temporalTable);
 
-                            return visitMethodCall;
-                        }
-                    case nameof(DbSetExtensions.FromTo):
-                        {
-                            var visitMethodCall =
-                                HandleTemporalTableDateRange(methodCallExpression, (t, s, e) => t.SetFromToDate(s, e));
-
-                            return visitMethodCall;
-                        }
-                    case nameof(DbSetExtensions.ContainedIn):
-                        {
-                            var visitMethodCall =
-                                HandleTemporalTableDateRange(methodCallExpression, (t, s, e) => t.SetContainedInDate(s, e));
-
-                            return visitMethodCall;
-                        }
-                    case nameof(DbSetExtensions.All):
-                        {
-                            var visitMethodCall = Visit(methodCallExpression.Arguments[0]);
-
-                            if (visitMethodCall is ShapedQueryExpression shapedExpression)
-                            {
-                                var temporalTable = shapedExpression.FindTemporalTable();
-                                temporalTable.SetQueryTypeToAll();
-                            }
-
-                            return visitMethodCall;
-                        }
+                    return new ShapedQueryExpression(
+                        selectExpression,
+                        new RelationalEntityShaperExpression(
+                            _RootExpression.EntityType,
+                            new ProjectionBindingExpression(
+                                selectExpression,
+                                new ProjectionMember(),
+                                typeof(ValueBuffer)),
+                            false));
                 }
             }
 
-            return base.VisitMethodCall(methodCallExpression);
+            return base.VisitExtension(extensionExpression);
+        }
+
+        protected override QueryableMethodTranslatingExpressionVisitor CreateSubqueryVisitor()
+        {
+            return new TemporalRelationalQueryableMethodTranslatingExpressionVisitor(this);
         }
     }
 }

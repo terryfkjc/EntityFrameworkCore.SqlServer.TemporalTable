@@ -14,10 +14,10 @@ namespace Microsoft.EntityFrameworkCore.Query.SqlExpressions
         /// <summary>
         /// Gets and sets the parameter used to constrain a query to a specific temporal period.
         /// </summary>
-        public ParameterExpression AsOfDate { get; private set; }
+        public Expression AsOfDate { get; private set; }
 
-        public ParameterExpression StartDate { get; private set; }
-        public ParameterExpression EndDate { get; private set; }
+        public Expression StartDate { get; private set; }
+        public Expression EndDate { get; private set; }
 
         public void SetQueryTypeToAll()
         {
@@ -27,7 +27,7 @@ namespace Microsoft.EntityFrameworkCore.Query.SqlExpressions
             this.TemporalQueryType = TemporalQueryType.All;
         }
 
-        public void SetAsOfDate(ParameterExpression parameter)
+        public void SetAsOfDate(Expression parameter)
         {
             this.AsOfDate = parameter;
             this.TemporalQueryType = TemporalQueryType.AsOf;
@@ -36,22 +36,22 @@ namespace Microsoft.EntityFrameworkCore.Query.SqlExpressions
             this.EndDate = null;
         }
 
-        public void SetFromToDate(ParameterExpression startDate, ParameterExpression endDate)
+        public void SetFromToDate(Expression startDate, Expression endDate)
         {
             SetDateRangeCore(startDate, endDate, TemporalQueryType.FromTo);
         }
 
-        public void SetBetweenAndDate(ParameterExpression startDate, ParameterExpression endDate)
+        public void SetBetweenAndDate(Expression startDate, Expression endDate)
         {
             SetDateRangeCore(startDate, endDate, TemporalQueryType.BetweenAnd);
         }
 
-        public void SetContainedInDate(ParameterExpression startDate, ParameterExpression endDate)
+        public void SetContainedInDate(Expression startDate, Expression endDate)
         {
             SetDateRangeCore(startDate, endDate, TemporalQueryType.ContainedIn);
         }
 
-        private void SetDateRangeCore(ParameterExpression startDate, ParameterExpression endDate, TemporalQueryType temporalQueryType)
+        private void SetDateRangeCore(Expression startDate, Expression endDate, TemporalQueryType temporalQueryType)
         {
             this.AsOfDate = null;
             this.StartDate = startDate;
@@ -73,7 +73,43 @@ namespace Microsoft.EntityFrameworkCore.Query.SqlExpressions
                 expressionPrinter.Append(Schema).Append(".");
             }
 
-            expressionPrinter.Append(Name).Append(" AS ").Append(Alias);
+            expressionPrinter.Append(Name);
+
+            switch (this.TemporalQueryType)
+            {
+                case TemporalQueryType.None:
+                    break;
+                case TemporalQueryType.AsOf:
+                    expressionPrinter.Append(" FOR SYSTEM_TIME AS OF ");
+                    expressionPrinter.Append(this.AsOfDate.ToString());
+                    break;
+                case TemporalQueryType.FromTo:
+                    expressionPrinter.Append(" FOR SYSTEM_TIME FROM ");
+                    expressionPrinter.Append(this.StartDate.ToString());
+                    expressionPrinter.Append(" TO ");
+                    expressionPrinter.Append(this.EndDate.ToString());
+                    break;
+                case TemporalQueryType.BetweenAnd:
+                    expressionPrinter.Append(" FOR SYSTEM_TIME BETWEEN ");
+                    expressionPrinter.Append(this.StartDate.ToString());
+                    expressionPrinter.Append(" AND ");
+                    expressionPrinter.Append(this.EndDate.ToString());
+                    break;
+                case TemporalQueryType.ContainedIn:
+                    expressionPrinter.Append(" FOR SYSTEM_TIME CONTAINED IN(");
+                    expressionPrinter.Append(this.StartDate.ToString());
+                    expressionPrinter.Append(", ");
+                    expressionPrinter.Append(this.EndDate.ToString());
+                    expressionPrinter.Append(")");
+                    break;
+                case TemporalQueryType.All:
+                    expressionPrinter.Append(" FOR SYSTEM_TIME ALL ");
+                    break;
+                default:
+                    break;
+            }
+
+            expressionPrinter.Append(" AS ").Append(Alias);
         }
 
         public override bool Equals(object obj)
@@ -81,5 +117,50 @@ namespace Microsoft.EntityFrameworkCore.Query.SqlExpressions
              => obj != null && ReferenceEquals(this, obj);
 
         public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), Name, Schema);
+
+        protected override Expression VisitChildren(ExpressionVisitor visitor)
+        {
+            switch (this.TemporalQueryType)
+            {
+                case TemporalQueryType.None:
+                    break;
+                case TemporalQueryType.AsOf:
+
+                    var _VisitedAsOf = visitor.Visit(this.AsOfDate);
+                    if (_VisitedAsOf != this.AsOfDate)
+                    {
+                        return new TemporalTableExpression(this.Name, this.Schema, this.Alias)
+                        {
+                            TemporalQueryType = TemporalQueryType.AsOf,
+                            AsOfDate = _VisitedAsOf,
+                        };
+                    }
+
+                    break;
+                case TemporalQueryType.FromTo:
+                case TemporalQueryType.BetweenAnd:
+                case TemporalQueryType.ContainedIn:
+
+                    var _VisitedStartDate = visitor.Visit(this.StartDate);
+                    var _VisitedEndDate = visitor.Visit(this.EndDate);
+
+                    if (this.StartDate != _VisitedStartDate || this.EndDate != _VisitedEndDate)
+                    {
+                        return new TemporalTableExpression(this.Name, this.Schema, this.Alias)
+                        {
+                            TemporalQueryType = TemporalQueryType.AsOf,
+                            StartDate = _VisitedStartDate,
+                            EndDate = _VisitedEndDate
+                        };
+                    }
+                    break;
+                case TemporalQueryType.All:
+                    break;
+                default:
+                    break;
+            }
+
+            return this;
+        }
     }
 }

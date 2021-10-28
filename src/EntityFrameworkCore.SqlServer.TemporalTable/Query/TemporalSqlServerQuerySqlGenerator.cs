@@ -10,7 +10,6 @@ using System.Text;
 
 namespace EntityFrameworkCore.SqlServer.TemporalTable.Query
 {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "EF1001:Internal EF Core API usage.", Justification = "<Pending>")]
     internal class TemporalSqlServerQuerySqlGenerator : SqlServerQuerySqlGenerator
     {
 
@@ -46,65 +45,88 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Query
         {
             Sql.Append(SqlGenerationHelper.DelimitIdentifier(tableExpression.Name, tableExpression.Schema));
 
-
             switch (tableExpression.TemporalQueryType)
             {
                 case TemporalQueryType.None:
                     break;
                 case TemporalQueryType.AsOf:
                     {
-                        var _AsOfDate = tableExpression.AsOfDate.Name;
+                        var _AsOfDate = ((ParameterExpression)tableExpression.AsOfDate).Name;
 
-                        Sql.Append($" FOR SYSTEM_TIME AS OF @{_AsOfDate}");
+                        Sql.Append(" FOR SYSTEM_TIME AS OF ");
+                        Sql.Append(SqlGenerationHelper.GenerateParameterNamePlaceholder(_AsOfDate));
 
-                        if (!CommandBuilder.Parameters.Any(x => x.InvariantName == tableExpression.AsOfDate.Name))
-                            CommandBuilder.AddParameter(tableExpression.AsOfDate.Name, _AsOfDate);
-
+                        if (CommandBuilder.Parameters.All(p => p.InvariantName != _AsOfDate))
+                        {
+                            CommandBuilder.AddParameter(_AsOfDate, _AsOfDate);
+                        }
                         break;
                     }
-                    
+
                 case TemporalQueryType.FromTo:
                     {
-                        var _StartDate = tableExpression.StartDate.Name;
-                        var _EndDate = tableExpression.EndDate.Name;
+                        var _StartDate = ((ParameterExpression)tableExpression.StartDate).Name;
+                        var _EndDate = ((ParameterExpression)tableExpression.EndDate).Name;
 
-                        Sql.Append($" FOR SYSTEM_TIME FROM @{_StartDate} TO @{_EndDate}");
+                        Sql.Append(" FOR SYSTEM_TIME FROM ");
+                        Sql.Append(SqlGenerationHelper.GenerateParameterNamePlaceholder(_StartDate));
+                        Sql.Append(" TO ");
+                        Sql.Append(SqlGenerationHelper.GenerateParameterNamePlaceholder(_EndDate));
 
-                        if (!CommandBuilder.Parameters.Any(x => x.InvariantName == _StartDate))
+                        if (CommandBuilder.Parameters.All(p => p.InvariantName != _StartDate))
+                        {
                             CommandBuilder.AddParameter(_StartDate, _StartDate);
+                        }
 
-                        if (!CommandBuilder.Parameters.Any(x => x.InvariantName == _EndDate))
+                        if (CommandBuilder.Parameters.All(p => p.InvariantName != _EndDate))
+                        {
                             CommandBuilder.AddParameter(_EndDate, _EndDate);
+                        }
 
                         break;
                     }
                 case TemporalQueryType.BetweenAnd:
                     {
-                        var _StartDate = tableExpression.StartDate.Name;
-                        var _EndDate = tableExpression.EndDate.Name;
+                        var _StartDate = ((ParameterExpression)tableExpression.StartDate).Name;
+                        var _EndDate = ((ParameterExpression)tableExpression.EndDate).Name;
 
-                        Sql.Append($" FOR SYSTEM_TIME BETWEEN @{_StartDate} AND @{_EndDate}");
+                        Sql.Append(" FOR SYSTEM_TIME BETWEEN ");
+                        Sql.Append(SqlGenerationHelper.GenerateParameterNamePlaceholder(_StartDate));
+                        Sql.Append(" AND ");
+                        Sql.Append(SqlGenerationHelper.GenerateParameterNamePlaceholder(_EndDate));
 
-                        if (!CommandBuilder.Parameters.Any(x => x.InvariantName == _StartDate))
+                        if (CommandBuilder.Parameters.All(p => p.InvariantName != _StartDate))
+                        {
                             CommandBuilder.AddParameter(_StartDate, _StartDate);
+                        }
 
-                        if (!CommandBuilder.Parameters.Any(x => x.InvariantName == _EndDate))
+                        if (CommandBuilder.Parameters.All(p => p.InvariantName != _EndDate))
+                        {
                             CommandBuilder.AddParameter(_EndDate, _EndDate);
+                        }
 
                         break;
                     }
                 case TemporalQueryType.ContainedIn:
                     {
-                        var _StartDate = tableExpression.StartDate.Name;
-                        var _EndDate = tableExpression.EndDate.Name;
+                        var _StartDate = ((ParameterExpression)tableExpression.StartDate).Name;
+                        var _EndDate = ((ParameterExpression)tableExpression.EndDate).Name;
 
-                        Sql.Append($" FOR SYSTEM_TIME CONTAINED IN(@{_StartDate}, @{_EndDate})");
+                        Sql.Append(" FOR SYSTEM_TIME CONTAINED IN(");
+                        Sql.Append(SqlGenerationHelper.GenerateParameterNamePlaceholder(_StartDate));
+                        Sql.Append(", ");
+                        Sql.Append(SqlGenerationHelper.GenerateParameterNamePlaceholder(_EndDate));
+                        Sql.Append(")");
 
-                        if (!CommandBuilder.Parameters.Any(x => x.InvariantName == _StartDate))
+                        if (CommandBuilder.Parameters.All(p => p.InvariantName != _StartDate))
+                        {
                             CommandBuilder.AddParameter(_StartDate, _StartDate);
+                        }
 
-                        if (!CommandBuilder.Parameters.Any(x => x.InvariantName == _EndDate))
+                        if (CommandBuilder.Parameters.All(p => p.InvariantName != _EndDate))
+                        {
                             CommandBuilder.AddParameter(_EndDate, _EndDate);
+                        }
 
                         break;
                     }

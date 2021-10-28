@@ -18,12 +18,10 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Extensions
         {
             services.AddScoped<IMigrationsSqlGenerator, TemporalTablesMigrationsSqlGenerator>();
             services.AddScoped<IMigrationsModelDiffer, TemporalMigrationsModelDiffer>();
-
             services.AddSingleton<IQuerySqlGeneratorFactory, TemporalQuerySqlGeneratorFactory>();
             services.AddSingleton<IQueryableMethodTranslatingExpressionVisitorFactory, TemporalQueryableMethodTranslatingExpressionVisitorFactory>();
-            services.AddSingleton<ISqlExpressionFactory, TemporalQueryExpressionFactory>();
             services.AddSingleton<IRelationalParameterBasedSqlProcessorFactory, TemporalRelationalParameterBasedSqlProcessorFactory>();
-
+            services.AddSingleton<IQueryTranslationPreprocessorFactory, TemporalQueryTranslationPreprocessorFactory>();
 
             return services;
         }
