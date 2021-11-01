@@ -9,32 +9,36 @@ namespace Microsoft.EntityFrameworkCore
 {
     public static class EntityTypeBuilderExtensions
     {
-        public static void HasTemporalTable<TEntity>(this EntityTypeBuilder<TEntity> builder) 
+        public static EntityTypeBuilder<TEntity> HasTemporalTable<TEntity>(this EntityTypeBuilder<TEntity> builder) 
             where TEntity : class
         {
             TemporalConfiguration temporalConfiguration = new TemporalConfiguration(builder);
+            return builder;
         }
 
-        public static void HasTemporalTable<TEntity>(
+        public static EntityTypeBuilder<TEntity> HasTemporalTable<TEntity>(
             this EntityTypeBuilder<TEntity> builder,
             Action<TemporalConfiguration<TEntity>> configuration)
             where TEntity : class
         {
             TemporalConfiguration<TEntity> temporalConfiguration = new TemporalConfiguration<TEntity>(builder);
             configuration?.Invoke(temporalConfiguration);
+            return builder;
         }
 
-        public static void HasTemporalTable(this EntityTypeBuilder builder)
+        public static EntityTypeBuilder HasTemporalTable(this EntityTypeBuilder builder)
         {
             TemporalConfiguration temporalConfiguration = new TemporalConfiguration(builder);
+            return builder;
         }
 
-        public static void HasTemporalTable(
+        public static EntityTypeBuilder HasTemporalTable(
             this EntityTypeBuilder builder,
             Action<TemporalConfiguration> configuration)
         {
             TemporalConfiguration temporalConfiguration = new TemporalConfiguration(builder);
             configuration?.Invoke(temporalConfiguration);
+            return builder;
         }
     }
 }

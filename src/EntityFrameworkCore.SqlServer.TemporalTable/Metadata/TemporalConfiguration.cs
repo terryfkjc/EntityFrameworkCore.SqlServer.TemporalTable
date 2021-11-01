@@ -2,12 +2,29 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace EntityFrameworkCore.SqlServer.TemporalTable.Metadata
 {
     public class TemporalConfiguration
     {
+        internal static Expression<Func<DateTime, DateTime>> DateToDatabase
+        {
+            get
+            {
+                return (d) => d;
+            }
+        }
+
+        internal static Expression<Func<DateTime, DateTime>> DateFromDatabase
+        {
+            get
+            {
+                return (d) => DateTime.SpecifyKind(d, DateTimeKind.Utc);
+            }
+        }
+
         public TemporalConfiguration(EntityTypeBuilder entityTypeBuilder)
         {
             EntityTypeBuilder = entityTypeBuilder;
@@ -37,6 +54,7 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Metadata
         {
             this.EntityTypeBuilder
                 .Property<DateTime>(TemporalAnnotationNames.DefaultStartTime)
+                .HasConversion(DateToDatabase, DateFromDatabase)
                 .SetStartDateColumn(column)
                 .ValueGeneratedOnAddOrUpdate();
 
@@ -47,6 +65,7 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Metadata
         {
             this.EntityTypeBuilder
                 .Property<DateTime>(TemporalAnnotationNames.DefaultEndTime)
+                .HasConversion(DateToDatabase, DateFromDatabase)
                 .SetEndDateColumn(column)
                 .ValueGeneratedOnAddOrUpdate();
 
