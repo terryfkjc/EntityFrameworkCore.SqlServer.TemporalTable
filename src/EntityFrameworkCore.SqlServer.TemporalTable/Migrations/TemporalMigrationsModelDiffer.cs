@@ -210,7 +210,44 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Migrations
                 }
             }
             
+            //If we found there are operations that adding Start/End date column on those tables 
+            //to be enabled temporal again, we need to make sure the start/end date are properly 
+            //configured with default values
+            foreach (var _EnableTemporal in enableTemporal)
+            {
+                var _AddStartColumnQuery = from c in leftovers.OfType<AddColumnOperation>()
+                                           where
+                                            BothAreMatchedOrNull(c.Name, _EnableTemporal.SysStartDate) &&
+                                            BothAreMatchedOrNull(c.Table, _EnableTemporal.Name) &&
+                                            BothAreMatchedOrNull(c.Schema, _EnableTemporal.Schema)
+                                           select c;
+
+                var _AddStartColumn = _AddStartColumnQuery.FirstOrDefault();
+                if (_AddStartColumn != null)
+                {
+                    _AddStartColumn.DefaultValueSql = "SYSUTCDATETIME()";
+                }
+
+                var _AddEndColumnQuery = from c in leftovers.OfType<AddColumnOperation>()
+                                         where
+                                           BothAreMatchedOrNull(c.Name, _EnableTemporal.SysEndDate) &&
+                                           BothAreMatchedOrNull(c.Table, _EnableTemporal.Name) &&
+                                           BothAreMatchedOrNull(c.Schema, _EnableTemporal.Schema)
+                                         select c;
+
+                var _AddEndColumn = _AddEndColumnQuery.FirstOrDefault();
+                if (_AddEndColumn != null)
+                {
+                    _AddEndColumn.DefaultValueSql = "'9999-12-31 23:59:59.9999999'";
+                }
+            }
+
             return disableTemporal.Concat(leftovers).Concat(enableTemporal).ToList();
         }
+
+        private bool BothAreMatchedOrNull(string a, string b)
+		{
+            return (a == null && b == null) || string.Equals(a, b, System.StringComparison.OrdinalIgnoreCase);
+		}
     }
 }

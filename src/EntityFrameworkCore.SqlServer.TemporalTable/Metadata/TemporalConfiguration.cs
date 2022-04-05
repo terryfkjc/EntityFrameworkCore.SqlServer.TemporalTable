@@ -38,6 +38,7 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Metadata
             this.EntityTypeBuilder
                 .Property<DateTime>(TemporalAnnotationNames.DefaultStartTime)
                 .SetStartDateColumn(column)
+                //.HasDefaultValueSql("SYSUTCDATETIME()")
                 .ValueGeneratedOnAddOrUpdate();
 
             return this;
@@ -48,6 +49,7 @@ namespace EntityFrameworkCore.SqlServer.TemporalTable.Metadata
             this.EntityTypeBuilder
                 .Property<DateTime>(TemporalAnnotationNames.DefaultEndTime)
                 .SetEndDateColumn(column)
+                //.HasDefaultValueSql("'9999-12-31 23:59:59.9999999'")
                 .ValueGeneratedOnAddOrUpdate();
 
             return this;

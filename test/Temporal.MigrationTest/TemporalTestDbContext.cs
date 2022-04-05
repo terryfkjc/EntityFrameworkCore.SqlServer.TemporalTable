@@ -42,6 +42,11 @@ namespace Temporal.MigrationTest
                 //        config.DataConsistencyCheck(true);
                 //    });
                 //});
+
+                modelBuilder.Entity<Subscription>(e =>
+                {
+                    e.HasTemporalTable();
+                });
             }
         }
     }

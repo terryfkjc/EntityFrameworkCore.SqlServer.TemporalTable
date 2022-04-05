@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Temporal.MigrationTest;
 
 namespace Temporal.MigrationTest.Migrations
 {
     [DbContext(typeof(MigrationTest.TemporalTestDbContext))]
-    partial class TemporalTestDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220316050548_DisableTemporalOnSubscription")]
+    partial class DisableTemporalOnSubscription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,25 +34,9 @@ namespace Temporal.MigrationTest.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("SysEndTime")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("SysEndTime")
-                        .HasAnnotation("Relational:SysEndDate", true);
-
-                    b.Property<DateTime>("SysStartTime")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasColumnName("SysStartTime")
-                        .HasAnnotation("Relational:SysStartDate", true);
-
                     b.HasKey("Id");
 
                     b.ToTable("Subscription");
-
-                    b
-                        .HasAnnotation("Relational:HistorySchema", "dbo")
-                        .HasAnnotation("Relational:IsTemporal", true);
                 });
 
             modelBuilder.Entity("Temporal.MigrationTest.Models.TransactionRecord", b =>

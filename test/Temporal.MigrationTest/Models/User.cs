@@ -12,4 +12,11 @@ namespace Temporal.MigrationTest.Models
         //public DateTime SysStartTime { get; set; }
         //public DateTime SysEndTime { get; set; }
     }
+
+    public class Subscription
+	{
+		public int Id { get; set; }
+		public string Name { get; set; }
+		public DateTime ExpiredDate { get; set; }
+	}
 }

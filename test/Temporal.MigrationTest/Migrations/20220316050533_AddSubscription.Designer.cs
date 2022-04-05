@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Temporal.MigrationTest;
 
 namespace Temporal.MigrationTest.Migrations
 {
     [DbContext(typeof(MigrationTest.TemporalTestDbContext))]
-    partial class TemporalTestDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220316050533_AddSubscription")]
+    partial class AddSubscription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
